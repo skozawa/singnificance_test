@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Statistics::PointEstimation;
 
-my $data = [ [300, 700], [350, 650] ];
+my $data = [ [300, 1000], [350, 1000] ];
 my $significance = $ARGV[0] // 95;
 
 my $a_stats = stats($data->[0]);
@@ -17,13 +17,12 @@ say $b_stats->lower_clm > $a_stats->upper_clm ? 'significant' : 'not significant
 sub stats {
     my $data = shift;
 
-    my $total    = $data->[0] + $data->[1];
-    my $mean     = $data->[0] / $total;
+    my $mean     = $data->[0] / $data->[1];
     my $variance = $mean * ( 1 - $mean );
 
     my $stats = Statistics::PointEstimation::Sufficient->new;
     $stats->set_significance($significance);
-    $stats->load_data($total, $mean, $variance);
+    $stats->load_data($data->[1], $mean, $variance);
     return $stats;
 }
 
